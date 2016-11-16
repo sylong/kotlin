@@ -24,7 +24,6 @@ import org.jetbrains.kotlin.android.*
 import org.jetbrains.kotlin.android.configure.AbstractConfigureProjectTest
 import org.jetbrains.kotlin.android.intentions.AbstractAndroidIntentionTest
 import org.jetbrains.kotlin.android.intentions.AbstractAndroidResourceIntentionTest
-import org.jetbrains.kotlin.android.lint.AbstractKotlinLintTest
 import org.jetbrains.kotlin.android.quickfixes.AbstractAndroidQuickFixMultiFileTest
 import org.jetbrains.kotlin.annotation.AbstractAnnotationProcessorBoxTest
 import org.jetbrains.kotlin.annotation.processing.test.sourceRetention.AbstractBytecodeListingTestForSourceRetention
@@ -160,6 +159,7 @@ import org.jetbrains.kotlin.shortenRefs.AbstractShortenRefsTest
 import org.jetbrains.kotlin.test.TargetBackend
 import org.jetbrains.kotlin.types.AbstractTypeBindingTest
 import org.jetbrains.kotlin.idea.refactoring.AbstractNameSuggestionProviderTest
+import org.jetbrains.kotlin.uast.AbstractKotlinLintTest
 import java.io.File
 import java.lang.IllegalArgumentException
 import java.util.*
@@ -1127,6 +1127,12 @@ fun main(args: Array<String>) {
         }
     }
 
+    testGroup("plugins/lint/lint-checks/test", "plugins/lint/lint-checks/testData") {
+        testClass<AbstractKotlinLintTest>() {
+            model("lint", excludeParentDirs = true)
+        }
+    }
+
     testGroup("plugins/plugins-tests/tests", "plugins/annotation-collector/testData") {
         testClass<AbstractAnnotationProcessorBoxTest>() {
             model("collectToFile", recursive = false, extension = null)
@@ -1186,10 +1192,6 @@ fun main(args: Array<String>) {
 
         testClass<AbstractAndroidQuickFixMultiFileTest>() {
             model("android/quickfix", pattern = """^(\w+)\.((before\.Main\.\w+)|(test))$""", testMethod = "doTestWithExtraFile")
-        }
-
-        testClass<AbstractKotlinLintTest>() {
-            model("android/lint", excludeParentDirs = true)
         }
 
         testClass<AbstractAndroidIntentionTest>() {

@@ -1,0 +1,14 @@
+@kotlin.coroutines.AllowSuspendExtensions
+public final class Controller {
+    public method <init>(): void
+    public final method inlineSuspendHere(@org.jetbrains.annotations.NotNull p0: java.lang.String, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): void
+    public final method suspendHere(@org.jetbrains.annotations.NotNull p0: java.lang.String, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): void
+}
+
+
+public final class SuspendExtensionKt {
+    public final static @org.jetbrains.annotations.NotNull method box(): java.lang.String
+    public final static method builder(@org.jetbrains.annotations.NotNull p0: kotlin.jvm.functions.Function1): void
+    public final static method inlineSuspendExtension(@org.jetbrains.annotations.NotNull p0: Controller, @org.jetbrains.annotations.NotNull p1: java.lang.String, @org.jetbrains.annotations.NotNull p2: kotlin.coroutines.Continuation): void
+    public final static method suspendExtension(@org.jetbrains.annotations.NotNull p0: Controller, @org.jetbrains.annotations.NotNull p1: java.lang.String, @org.jetbrains.annotations.NotNull p2: kotlin.coroutines.Continuation): void
+}

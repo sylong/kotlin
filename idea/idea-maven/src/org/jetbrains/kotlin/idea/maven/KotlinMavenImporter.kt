@@ -33,12 +33,10 @@ import org.jetbrains.idea.maven.model.MavenPlugin
 import org.jetbrains.idea.maven.project.*
 import org.jetbrains.jps.model.java.JavaSourceRootType
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType
-import org.jetbrains.kotlin.config.LanguageVersion
-import org.jetbrains.kotlin.config.TargetPlatformKind
+import org.jetbrains.kotlin.extensions.ProjectExtensionDescriptor
+import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.facet.configureFacet
 import org.jetbrains.kotlin.idea.facet.getOrCreateFacet
-import org.jetbrains.kotlin.idea.facet.initializeIfNeeded
-import org.jetbrains.kotlin.idea.facet.mavenLibraryId
 import org.jetbrains.kotlin.idea.maven.configuration.KotlinMavenConfigurator
 import java.io.File
 import java.util.*
@@ -46,6 +44,15 @@ import java.util.*
 private val KotlinPluginGroupId = "org.jetbrains.kotlin"
 private val KotlinPluginArtifactId = "kotlin-maven-plugin"
 private val KotlinPluginSourceDirsConfig = "sourceDirs"
+
+interface MavenProjectImportHandler {
+    companion object : ProjectExtensionDescriptor<MavenProjectImportHandler>(
+            "org.jetbrains.kotlin.mavenProjectImportHandler",
+            MavenProjectImportHandler::class.java
+    )
+
+    operator fun invoke(facet: KotlinFacet, mavenProject: MavenProject)
+}
 
 class KotlinMavenImporter : MavenImporter(KotlinPluginGroupId, KotlinPluginArtifactId) {
     override fun preProcess(module: Module, mavenProject: MavenProject, changes: MavenProjectChanges, modifiableModelsProvider: IdeModifiableModelsProvider) {

@@ -42,7 +42,7 @@ class KotlinAllOpenMavenPluginExtension : KotlinMavenPluginExtension {
 @Component(role = KotlinMavenPluginExtension::class, hint = "spring")
 class KotlinSpringMavenPluginExtension : KotlinMavenPluginExtension {
     private companion object {
-        val ANNOTATIONS_ARG_NAME = "annotations"
+        val ANNOTATIONS_ARG_NAME = "annotation"
 
         val SPRING_ANNOTATIONS = listOf(
                 "org.springframework.stereotype.Component",

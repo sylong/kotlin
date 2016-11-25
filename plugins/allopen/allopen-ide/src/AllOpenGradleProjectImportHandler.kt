@@ -26,7 +26,7 @@ import java.io.File
 
 class AllOpenGradleProjectImportHandler : GradleProjectImportHandler {
     override fun invoke(facet: KotlinFacet, projectData: ProjectData?, sourceSetData: GradleSourceSetData) {
-        facet.putUserData(ALL_OPEN_ANNOTATIONS, getAnnotationsList(facet, projectData, sourceSetData))
+        modifyAllOpenCompilerArguments(facet, getAnnotationsList(facet, projectData, sourceSetData))
     }
 
     private fun getAnnotationsList(facet: KotlinFacet, projectData: ProjectData?, sourceSetData: GradleSourceSetData): List<String> {

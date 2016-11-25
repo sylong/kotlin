@@ -20,18 +20,21 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.roots.ProjectRootModificationTracker
-import com.intellij.openapi.util.Key
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
 import org.jetbrains.kotlin.allopen.AbstractAllOpenDeclarationAttributeAltererExtension
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.psi.KtModifierListOwner
+import org.jetbrains.kotlin.allopen.AllOpenCommandLineProcessor.Companion.PLUGIN_ID
+import org.jetbrains.kotlin.allopen.AllOpenCommandLineProcessor.Companion.ANNOTATION_OPTION
 import java.util.*
 
-val ALL_OPEN_ANNOTATIONS = Key<List<String>>("org.jetbrains.kotlin.allopen.AllOpenAnnotations")
-
 class IdeAllOpenDeclarationAttributeAltererExtension(val project: Project) : AbstractAllOpenDeclarationAttributeAltererExtension() {
+    private companion object {
+        val ANNOTATION_OPTION_PREFIX = "plugin:$PLUGIN_ID:${ANNOTATION_OPTION.name}="
+    }
+
     private val cache: CachedValue<WeakHashMap<Module, List<String>>> = cachedValue(project) {
         CachedValueProvider.Result.create(WeakHashMap<Module, List<String>>(), ProjectRootModificationTracker.getInstance(project))
     }
@@ -44,7 +47,11 @@ class IdeAllOpenDeclarationAttributeAltererExtension(val project: Project) : Abs
 
         return cache.value.getOrPut(module) {
             val kotlinFacet = KotlinFacet.get(module) ?: return@getOrPut emptyList()
-            kotlinFacet.getUserData(ALL_OPEN_ANNOTATIONS) ?: emptyList()
+            val commonArgs = kotlinFacet.configuration.settings.compilerInfo.commonCompilerArguments ?: return@getOrPut emptyList()
+
+            commonArgs.pluginOptions?.filter { it.startsWith(ANNOTATION_OPTION_PREFIX) }
+                                    ?.map { it.substring(ANNOTATION_OPTION_PREFIX.length) }
+                                    ?: emptyList()
         }
     }
 

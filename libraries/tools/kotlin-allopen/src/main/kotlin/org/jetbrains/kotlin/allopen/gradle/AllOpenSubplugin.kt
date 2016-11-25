@@ -51,7 +51,7 @@ class AllOpenGradleSubplugin : Plugin<Project> {
 
 class AllOpenKotlinGradleSubplugin : KotlinGradleSubplugin<AbstractCompile> {
     private companion object {
-        val ANNOTATIONS_ARG_NAME = "annotations"
+        val ANNOTATIONS_ARG_NAME = "annotation"
     }
 
     override fun isApplicable(project: Project, task: AbstractCompile) = AllOpenGradleSubplugin.isEnabled(project)

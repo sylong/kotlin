@@ -21,14 +21,26 @@ import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.allopen.AllOpenCommandLineProcessor.Companion.PLUGIN_ID
 import org.jetbrains.kotlin.allopen.AllOpenCommandLineProcessor.Companion.ANNOTATION_OPTION
 
-internal fun modifyAllOpenCompilerArguments(facet: KotlinFacet, annotations: List<String>) {
+internal class AllOpenPluginSetup(val annotationFqNames: List<String>, val classpath: List<String>)
+
+internal fun modifyAllOpenCompilerArguments(facet: KotlinFacet, setup: AllOpenPluginSetup?) {
     val compileInfo = facet.configuration.settings.compilerInfo
 
-    val newCommonArguments = compileInfo.commonCompilerArguments ?: CommonCompilerArguments.DummyImpl()
+    val commonArguments = compileInfo.commonCompilerArguments ?: CommonCompilerArguments.DummyImpl()
 
-    val newOptions = (newCommonArguments.pluginOptions ?: emptyArray()).filterTo(mutableListOf()) { !it.startsWith("plugin:${PLUGIN_ID}:") } +
-                     annotations.map { "plugin:${PLUGIN_ID}:${ANNOTATION_OPTION.name}=$it" }
-    newCommonArguments.pluginOptions = newOptions.toTypedArray()
+    val annotationFqNames = setup?.annotationFqNames?.map { "plugin:$PLUGIN_ID:${ANNOTATION_OPTION.name}=$it" } ?: emptyList()
 
-    compileInfo.commonCompilerArguments = newCommonArguments
+    val oldPluginOptions = (commonArguments.pluginOptions ?: emptyArray()).filterTo(mutableListOf()) { !it.startsWith("plugin:$PLUGIN_ID:") }
+    val newPluginOptions = oldPluginOptions + annotationFqNames
+
+    val oldPluginClasspaths = (commonArguments.pluginClasspaths ?: emptyArray()).filterTo(mutableListOf()) {
+        !it.substringAfterLast('/', missingDelimiterValue = "").matches("(kotlin-)?allopen-.*\\.jar".toRegex())
+    }
+
+    val newPluginClasspaths = oldPluginClasspaths + (setup?.classpath ?: emptyList())
+
+    commonArguments.pluginOptions = newPluginOptions.toTypedArray()
+    commonArguments.pluginClasspaths = newPluginClasspaths.toTypedArray()
+
+    compileInfo.commonCompilerArguments = commonArguments
 }

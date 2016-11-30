@@ -17,5 +17,6 @@
     <orderEntry type="library" name="maven" level="project" />
     <orderEntry type="module" module-name="cli-common" />
     <orderEntry type="module" module-name="idea-jps-common" />
+    <orderEntry type="module" module-name="util" />
   </component>
 </module>

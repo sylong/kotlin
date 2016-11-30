@@ -24,11 +24,19 @@ import org.jetbrains.kotlin.idea.facet.KotlinFacet
 import org.jetbrains.kotlin.idea.maven.MavenProjectImportHandler
 import org.jetbrains.kotlin.idea.maven.KotlinMavenImporter.Companion.KOTLIN_PLUGIN_GROUP_ID
 import org.jetbrains.kotlin.idea.maven.KotlinMavenImporter.Companion.KOTLIN_PLUGIN_ARTIFACT_ID
+import java.io.File
 
 class AllOpenMavenProjectImportHandler : MavenProjectImportHandler {
     private companion object {
         val MAVEN_ALL_OPEN_ARTIFACT_NAME = "kotlin-maven-allopen"
         val ANNOTATATION_PARAMETER_PREFIX = "all-open:${AllOpenCommandLineProcessor.ANNOTATION_OPTION.name}="
+
+        private val SPRING_ALLOPEN_ANNOTATIONS = listOf(
+                "org.springframework.stereotype.Component",
+                "org.springframework.transaction.annotation.Transactional",
+                "org.springframework.scheduling.annotation.Async",
+                "org.springframework.cache.annotation.Cacheable"
+        )
     }
 
     override fun invoke(facet: KotlinFacet, mavenProject: MavenProject) {
@@ -40,23 +48,41 @@ class AllOpenMavenProjectImportHandler : MavenProjectImportHandler {
             it.groupId == KOTLIN_PLUGIN_GROUP_ID && it.artifactId == KOTLIN_PLUGIN_ARTIFACT_ID
         } ?: return null
 
-        val hasAllOpenInDependencies = kotlinPlugin.dependencies.any {
-            it.groupId == KOTLIN_PLUGIN_GROUP_ID && it.artifactId == MAVEN_ALL_OPEN_ARTIFACT_NAME
+        if (!kotlinPlugin.dependencies.any { it.groupId == KOTLIN_PLUGIN_GROUP_ID && it.artifactId == MAVEN_ALL_OPEN_ARTIFACT_NAME }) {
+            return null
         }
 
-        if (!hasAllOpenInDependencies) return null
+        val runtimeJarFile = mavenProject.dependencies
+                .firstOrNull { it.groupId == KOTLIN_PLUGIN_GROUP_ID && it.artifactId == "kotlin-runtime" }
+                ?.file ?: return null
+        val runtimeVersion = runtimeJarFile.parentFile.name
+
+        val mavenAllOpenPluginFile = File(runtimeJarFile.parentFile.parentFile.parentFile,
+                                          "kotlin-maven-allopen/$runtimeVersion/kotlin-maven-allopen-$runtimeVersion.jar")
 
         val configuration = kotlinPlugin.configurationElement ?: return null
 
-        val enabledCompilerPlugins = configuration.getElement("compilerPlugins")?.getElements()?.flatMap { plugin ->
-            plugin.content.mapNotNull { (it as? Text)?.text }
+        val enabledCompilerPlugins = configuration.getElement("compilerPlugins")
+                ?.getElements()
+                ?.flatMap { plugin -> plugin.content.mapNotNull { (it as? Text)?.text } }
+                ?: emptyList()
+
+        if ("all-open" !in enabledCompilerPlugins && "spring" !in enabledCompilerPlugins) {
+            return null
         }
 
-        val allOpenAnnotations = configuration.getElement("pluginOptions")?.getElements()?.flatMap { it.content }
+        val allOpenAnnotations = configuration.getElement("pluginOptions")
+                ?.getElements()
+                ?.flatMap { it.content }
                 ?.filter { (it as? Text)?.text?.startsWith(ANNOTATATION_PARAMETER_PREFIX) ?: false }
-                ?.map { (it as Text).text.substring(ANNOTATATION_PARAMETER_PREFIX.length) }
+                ?.mapTo(mutableListOf()) { (it as Text).text.substring(ANNOTATATION_PARAMETER_PREFIX.length) }
+                ?: mutableListOf<String>()
 
-        return AllOpenPluginSetup(allOpenAnnotations ?: emptyList(), listOf())
+        if ("spring" in enabledCompilerPlugins) {
+            allOpenAnnotations.addAll(SPRING_ALLOPEN_ANNOTATIONS)
+        }
+
+        return AllOpenPluginSetup(allOpenAnnotations, listOf(mavenAllOpenPluginFile.absolutePath))
     }
 
     private fun Element.getElement(name: String) = content.firstOrNull { it is Element && it.name == name } as? Element

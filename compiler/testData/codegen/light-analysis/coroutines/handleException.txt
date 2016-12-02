@@ -7,8 +7,8 @@ public final class Controller {
     public final method handleException(@org.jetbrains.annotations.NotNull p0: java.lang.Throwable, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): void
     public final method run(@org.jetbrains.annotations.NotNull p0: kotlin.jvm.functions.Function1): void
     public final method setException(@org.jetbrains.annotations.Nullable p0: java.lang.Throwable): void
-    public final method suspendWithException(@org.jetbrains.annotations.NotNull p0: java.lang.Exception, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): void
-    public final method suspendWithValue(@org.jetbrains.annotations.NotNull p0: java.lang.String, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): void
+    public final @org.jetbrains.annotations.Nullable method suspendWithException(@org.jetbrains.annotations.NotNull p0: java.lang.Exception, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): java.lang.Object
+    public final @org.jetbrains.annotations.Nullable method suspendWithValue(@org.jetbrains.annotations.NotNull p0: java.lang.String, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): java.lang.Object
 }
 
 

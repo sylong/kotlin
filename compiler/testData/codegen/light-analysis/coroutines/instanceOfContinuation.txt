@@ -1,7 +1,7 @@
 public final class Controller {
     public method <init>(): void
-    public final method runCast(@org.jetbrains.annotations.NotNull p0: kotlin.coroutines.Continuation): void
-    public final method runInstanceOf(@org.jetbrains.annotations.NotNull p0: kotlin.coroutines.Continuation): void
+    public final @org.jetbrains.annotations.Nullable method runCast(@org.jetbrains.annotations.NotNull p0: kotlin.coroutines.Continuation): java.lang.Object
+    public final @org.jetbrains.annotations.Nullable method runInstanceOf(@org.jetbrains.annotations.NotNull p0: kotlin.coroutines.Continuation): java.lang.Object
 }
 
 

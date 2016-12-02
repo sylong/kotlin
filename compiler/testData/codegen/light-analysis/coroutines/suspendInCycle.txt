@@ -3,8 +3,8 @@ public final class Controller {
     public method <init>(): void
     public final method getI(): int
     public final method setI(p0: int): void
-    public final method suspendHere(@org.jetbrains.annotations.NotNull p0: kotlin.coroutines.Continuation): void
-    public final method suspendThere(@org.jetbrains.annotations.NotNull p0: kotlin.coroutines.Continuation): void
+    public final @org.jetbrains.annotations.Nullable method suspendHere(@org.jetbrains.annotations.NotNull p0: kotlin.coroutines.Continuation): java.lang.Object
+    public final @org.jetbrains.annotations.Nullable method suspendThere(@org.jetbrains.annotations.NotNull p0: kotlin.coroutines.Continuation): java.lang.Object
 }
 
 

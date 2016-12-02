@@ -4,7 +4,7 @@ public final class Controller {
     public final method getCResult(): int
     public final method handleResult(p0: int, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): void
     public final method setCResult(p0: int): void
-    public final method suspendHere(p0: int, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): void
+    public final @org.jetbrains.annotations.Nullable method suspendHere(p0: int, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): java.lang.Object
 }
 
 

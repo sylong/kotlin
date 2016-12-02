@@ -8,7 +8,7 @@ public final class Controller {
     public final method next(): void
     public final method setLastSuspension(@org.jetbrains.annotations.Nullable p0: kotlin.coroutines.Continuation): void
     public final method setResult(@org.jetbrains.annotations.NotNull p0: java.lang.String): void
-    public final method suspendHere(@org.jetbrains.annotations.NotNull p0: kotlin.coroutines.Continuation): void
+    public final @org.jetbrains.annotations.Nullable method suspendHere(@org.jetbrains.annotations.NotNull p0: kotlin.coroutines.Continuation): java.lang.Object
 }
 
 

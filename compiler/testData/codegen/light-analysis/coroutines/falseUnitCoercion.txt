@@ -1,6 +1,6 @@
 public final class Controller {
     public method <init>(): void
-    public final method suspendHere(p0: java.lang.Object, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): void
+    public final @org.jetbrains.annotations.Nullable method suspendHere(p0: java.lang.Object, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): java.lang.Object
 }
 
 

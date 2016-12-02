@@ -1,8 +1,8 @@
 public final class Controller {
     public method <init>(): void
-    public final method suspendInline(@org.jetbrains.annotations.NotNull p0: java.lang.String, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): void
-    public final method suspendInline(@org.jetbrains.annotations.NotNull p0: kotlin.jvm.functions.Function0, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): void
-    private final method suspendInline(p0: kotlin.coroutines.Continuation): void
+    public final @org.jetbrains.annotations.Nullable method suspendInline(@org.jetbrains.annotations.NotNull p0: java.lang.String, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): java.lang.Object
+    public final @org.jetbrains.annotations.Nullable method suspendInline(@org.jetbrains.annotations.NotNull p0: kotlin.jvm.functions.Function0, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): java.lang.Object
+    private final method suspendInline(p0: kotlin.coroutines.Continuation): java.lang.Object
     public final method withValue(@org.jetbrains.annotations.NotNull p0: java.lang.String, @org.jetbrains.annotations.NotNull p1: kotlin.coroutines.Continuation): void
 }
 

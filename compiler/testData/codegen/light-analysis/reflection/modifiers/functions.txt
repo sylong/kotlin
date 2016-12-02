@@ -14,9 +14,3 @@ public final class FunctionsKt {
     public final static method invoke(@org.jetbrains.annotations.NotNull p0: kotlin.Unit): void
     public final static method setInlineProperty(@org.jetbrains.annotations.NotNull p0: kotlin.Unit): void
 }
-
-
-public final class Suspend {
-    public method <init>(): void
-    public final method suspend(@org.jetbrains.annotations.NotNull p0: kotlin.coroutines.Continuation): void
-}

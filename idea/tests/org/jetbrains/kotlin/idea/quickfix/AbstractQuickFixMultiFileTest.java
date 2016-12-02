@@ -18,6 +18,7 @@ package org.jetbrains.kotlin.idea.quickfix;
 
 import com.intellij.codeInsight.CodeInsightSettings;
 import com.intellij.codeInsight.daemon.impl.HighlightInfo;
+import com.intellij.codeInsight.daemon.quickFix.ActionHint;
 import com.intellij.codeInsight.daemon.quickFix.LightQuickFixTestCase;
 import com.intellij.codeInsight.intention.IntentionAction;
 import com.intellij.codeInsight.intention.impl.ShowIntentionActionsHandler;
@@ -283,10 +284,10 @@ public abstract class AbstractQuickFixMultiFileTest extends KotlinDaemonAnalyzer
                     try {
                         PsiFile psiFile = getFile();
 
-                        Pair<String, Boolean> pair = LightQuickFixTestCase.parseActionHint(psiFile, beforeFile.content);
-                        String text = pair.getFirst();
+                        ActionHint actionHint = ActionHint.parse(psiFile, beforeFile.content);
+                        String text = actionHint.getExpectedText();
 
-                        boolean actionShouldBeAvailable = pair.getSecond();
+                        boolean actionShouldBeAvailable = actionHint.shouldPresent();
 
                         if (psiFile instanceof KtFile) {
                             DirectiveBasedActionUtils.INSTANCE.checkForUnexpectedErrors((KtFile) psiFile);
@@ -298,7 +299,7 @@ public abstract class AbstractQuickFixMultiFileTest extends KotlinDaemonAnalyzer
                         String afterText =
                                 new StringBuilder(actualText).insert(getEditor().getCaretModel().getOffset(), "<caret>").toString();
 
-                        if (pair.second) {
+                        if (actionHint.shouldPresent()) {
                             assertNotNull(".after file should exist", afterFile);
                             if (!afterText.equals(afterFile.content)) {
                                 StringBuilder actualTestFile = new StringBuilder();
@@ -386,10 +387,10 @@ public abstract class AbstractQuickFixMultiFileTest extends KotlinDaemonAnalyzer
                     try {
                         PsiFile psiFile = getFile();
 
-                        Pair<String, Boolean> pair = LightQuickFixTestCase.parseActionHint(psiFile, originalFileText);
-                        String text = pair.getFirst();
+                        ActionHint actionHint = ActionHint.parse(psiFile, originalFileText);
+                        String text = actionHint.getExpectedText();
 
-                        boolean actionShouldBeAvailable = pair.getSecond();
+                        boolean actionShouldBeAvailable = actionHint.shouldPresent();
 
                         if (psiFile instanceof KtFile) {
                             DirectiveBasedActionUtils.INSTANCE.checkForUnexpectedErrors((KtFile) psiFile);

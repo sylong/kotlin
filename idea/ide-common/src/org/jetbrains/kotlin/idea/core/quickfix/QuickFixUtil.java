@@ -126,8 +126,14 @@ public class QuickFixUtil {
             return false;
         }
         while (parent != child) {
-            if (child.getParent() instanceof KtParenthesizedExpression) {
-                child = (KtExpression) child.getParent();
+            PsiElement childParent = child.getParent();
+            if (childParent instanceof KtParenthesizedExpression) {
+                child = (KtExpression) childParent;
+                continue;
+            }
+            if (childParent instanceof KtDotQualifiedExpression &&
+                (child instanceof KtCallExpression || child instanceof KtDotQualifiedExpression)) {
+                child = (KtExpression) childParent;
                 continue;
             }
             child = getParentIfForBranch(child);

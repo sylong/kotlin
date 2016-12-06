@@ -95,6 +95,24 @@ class AndroidGradleWrapper {
   }
 
   @NotNull
+  static Map<String, String> getAnnotationProcessorOptionsFromAndroidVariant(@Nullable Object variantData) {
+    if (!(variantData instanceof BaseVariantData)) {
+      throw new IllegalArgumentException("BaseVariantData instance expected")
+    }
+
+    def variantConfiguration = variantData.variantConfiguration
+    if (variantConfiguration.getMetaClass().getMetaMethod("getJavaCompileOptions")) {
+      def javaCompileOptions = variantConfiguration.getJavaCompileOptions()
+
+      if (javaCompileOptions.getMetaClass().getMetaMethod("getAnnotationProcessorOptions")) {
+        return javaCompileOptions.getAnnotationProcessorOptions().getArguments()
+      }
+    }
+
+    return null
+  }
+
+  @NotNull
   static DefaultDomainObjectSet<TestVariant> getTestVariants(BaseExtension extension) {
     if (extension.getMetaClass().getMetaMethod("getTestVariants")) {
       return extension.getTestVariants()

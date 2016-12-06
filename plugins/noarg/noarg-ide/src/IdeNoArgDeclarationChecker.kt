@@ -17,8 +17,8 @@
 package org.jetbrains.kotlin.noarg.ide
 
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.roots.ProjectRootModificationTracker
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
@@ -40,10 +40,7 @@ class IdeNoArgDeclarationChecker(val project: Project) : AbstractNoArgDeclaratio
     }
 
     override fun getAnnotationFqNames(modifierListOwner: KtModifierListOwner): List<String> {
-        val project = modifierListOwner.project
-
-        val virtualFile = modifierListOwner.containingFile?.virtualFile ?: return emptyList()
-        val module = ProjectRootManager.getInstance(project).fileIndex.getModuleForFile(virtualFile) ?: return emptyList()
+        val module = ModuleUtilCore.findModuleForPsiElement(modifierListOwner) ?: return emptyList()
 
         return cache.value.getOrPut(module) {
             val kotlinFacet = KotlinFacet.get(module) ?: return@getOrPut emptyList()

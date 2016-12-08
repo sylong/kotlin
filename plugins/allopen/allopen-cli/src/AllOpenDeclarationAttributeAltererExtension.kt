@@ -34,7 +34,6 @@ class CliAllOpenDeclarationAttributeAltererExtension(
 
 abstract class AbstractAllOpenDeclarationAttributeAltererExtension : DeclarationAttributeAltererExtension, AnnotationBasedExtension {
     companion object {
-        @TestOnly
         val ANNOTATIONS_FOR_TESTS = listOf("AllOpen", "AllOpen2", "test.AllOpen")
     }
 

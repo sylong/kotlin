@@ -43,6 +43,7 @@ import org.jetbrains.kotlin.psi.codeFragmentUtil.CodeFragmentUtilKt;
 import org.jetbrains.kotlin.resolve.BindingContext;
 import org.jetbrains.kotlin.resolve.DescriptorToSourceUtils;
 import org.jetbrains.kotlin.resolve.DescriptorUtils;
+import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall;
 import org.jetbrains.kotlin.resolve.inline.InlineUtil;
 import org.jetbrains.kotlin.resolve.scopes.receivers.ReceiverValue;
 import org.jetbrains.kotlin.serialization.deserialization.descriptors.DeserializedCallableMemberDescriptor;
@@ -301,6 +302,12 @@ public class JvmCodegenUtil {
     ) {
         VariableAccessorDescriptor getter = descriptor.getGetter();
         if (getter != null) {
+            //ResolvedCall<FunctionDescriptor> toDelegateForResolvedCall =
+            //        bindingContext.get(BindingContext.TO_DELEGATE_FOR_RESOLVED_CALL, descriptor);
+            //if (toDelegateForResolvedCall != null) {
+            //    return toDelegateForResolvedCall.getResultingDescriptor().getReturnType();
+            //}
+
             Call call = bindingContext.get(DELEGATED_PROPERTY_CALL, getter);
             if (call != null) {
                 assert call.getExplicitReceiver() != null : "No explicit receiver for call:" + call;

@@ -5989,6 +5989,12 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
                 KotlinTestUtils.assertAllTestsPresentByMetadata(this.getClass(), new File("compiler/testData/codegen/box/delegatedProperty/toDelegateFor"), Pattern.compile("^(.+)\\.kt$"), TargetBackend.JVM, true);
             }
 
+            @TestMetadata("differentReceivers.kt")
+            public void testDifferentReceivers() throws Exception {
+                String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/delegatedProperty/toDelegateFor/differentReceivers.kt");
+                doTest(fileName);
+            }
+
             @TestMetadata("evaluationOrder.kt")
             public void testEvaluationOrder() throws Exception {
                 String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/delegatedProperty/toDelegateFor/evaluationOrder.kt");
@@ -6022,6 +6028,24 @@ public class BlackBoxCodegenTestGenerated extends AbstractBlackBoxCodegenTest {
             @TestMetadata("jvmStaticInObject.kt")
             public void testJvmStaticInObject() throws Exception {
                 String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/delegatedProperty/toDelegateFor/jvmStaticInObject.kt");
+                doTest(fileName);
+            }
+
+            @TestMetadata("local.kt")
+            public void testLocal() throws Exception {
+                String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/delegatedProperty/toDelegateFor/local.kt");
+                doTest(fileName);
+            }
+
+            @TestMetadata("localCaptured.kt")
+            public void testLocalCaptured() throws Exception {
+                String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/delegatedProperty/toDelegateFor/localCaptured.kt");
+                doTest(fileName);
+            }
+
+            @TestMetadata("localDifferentReceivers.kt")
+            public void testLocalDifferentReceivers() throws Exception {
+                String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/codegen/box/delegatedProperty/toDelegateFor/localDifferentReceivers.kt");
                 doTest(fileName);
             }
 

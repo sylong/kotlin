@@ -72,19 +72,26 @@ class DelegatedPropertyResolver(
             if (setter.hasBody()) trace.report(ACCESSOR_FOR_DELEGATED_PROPERTY.on(setter))
         }
 
-        val initializerScope: LexicalScope =
-                if (variableDescriptor is PropertyDescriptor)
-                    ScopeUtils.makeScopeForPropertyInitializer(propertyHeaderScope, variableDescriptor)
-                else propertyHeaderScope
+        val delegateFunctionsScope: LexicalScope
+        val initializerScope: LexicalScope
+
+        if (variableDescriptor is PropertyDescriptor) {
+            delegateFunctionsScope = ScopeUtils.makeScopeForDelegateConventionFunctions(propertyHeaderScope, variableDescriptor)
+            initializerScope = ScopeUtils.makeScopeForPropertyInitializer(propertyHeaderScope, variableDescriptor)
+        }
+        else {
+            initializerScope = propertyHeaderScope
+            delegateFunctionsScope = initializerScope
+        }
 
         val byExpressionType = resolveDelegateExpression(delegateExpression, property, variableDescriptor, initializerScope, trace, outerDataFlowInfo)
 
         resolveToDelegateForMethod(variableDescriptor, delegateExpression, byExpressionType, trace, initializerScope, outerDataFlowInfo)
         val delegateType = getResolvedDelegateType(variableDescriptor, delegateExpression, byExpressionType, trace)
 
-        resolveGetValueMethod(variableDescriptor, delegateExpression, delegateType, trace, initializerScope, outerDataFlowInfo)
+        resolveGetValueMethod(variableDescriptor, delegateExpression, delegateType, trace, delegateFunctionsScope, outerDataFlowInfo)
         if (property.isVar) {
-            resolveSetValueMethod(variableDescriptor, delegateExpression, delegateType, trace, initializerScope, outerDataFlowInfo)
+            resolveSetValueMethod(variableDescriptor, delegateExpression, delegateType, trace, delegateFunctionsScope, outerDataFlowInfo)
         }
     }
 

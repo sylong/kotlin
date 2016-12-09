@@ -33,7 +33,6 @@ import org.jetbrains.kotlin.storage.getValue
 import org.jetbrains.kotlin.utils.addToStdlib.check
 
 class DefaultImportScopeProvider(
-        private val topLevelDescriptorProvider: TopLevelDescriptorProvider,
         private val storageManager: StorageManager,
         private val moduleDescriptor: ModuleDescriptor,
         private val qualifiedExpressionResolver: QualifiedExpressionResolver,

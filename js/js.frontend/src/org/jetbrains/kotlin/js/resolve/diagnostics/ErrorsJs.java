@@ -65,6 +65,8 @@ public interface ErrorsJs {
     DiagnosticFactory0<KtElement> EXTERNAL_TYPE_EXTENDS_NON_EXTERNAL_TYPE = DiagnosticFactory0.create(
             ERROR, PositioningStrategies.DECLARATION_SIGNATURE_OR_DEFAULT);
     DiagnosticFactory1<PsiElement, String> WRONG_OPERATION_WITH_DYNAMIC = DiagnosticFactory1.create(ERROR);
+    DiagnosticFactory0<KtElement> OVERRIDING_EXTERNAL_FUN_WITH_OPTIONAL_PARAMS =
+            DiagnosticFactory0.create(ERROR, PositioningStrategies.DECLARATION_SIGNATURE_OR_DEFAULT);
 
     @SuppressWarnings("UnusedDeclaration")
     Object _initializer = new Object() {

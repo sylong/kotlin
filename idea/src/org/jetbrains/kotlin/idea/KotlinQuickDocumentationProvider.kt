@@ -18,15 +18,12 @@ package org.jetbrains.kotlin.idea
 
 import com.google.common.html.HtmlEscapers
 import com.intellij.codeInsight.documentation.DocumentationManagerUtil
-import com.intellij.codeInsight.javadoc.JavaDocInfoGenerator
 import com.intellij.codeInsight.javadoc.JavaDocInfoGeneratorFactory
 import com.intellij.lang.documentation.AbstractDocumentationProvider
 import com.intellij.lang.java.JavaDocumentationProvider
-import com.intellij.lang.java.JavaLanguage
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
-import com.intellij.psi.PsiMethod
 import org.jetbrains.kotlin.asJava.LightClassUtil
 import org.jetbrains.kotlin.asJava.elements.KtLightDeclaration
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
@@ -49,6 +46,7 @@ import org.jetbrains.kotlin.psi.psiUtil.getNonStrictParentOfType
 import org.jetbrains.kotlin.renderer.ClassifierNamePolicy
 import org.jetbrains.kotlin.renderer.DescriptorRenderer
 import org.jetbrains.kotlin.resolve.BindingContext
+import org.jetbrains.kotlin.resolve.DescriptorUtils
 import org.jetbrains.kotlin.resolve.deprecatedByAnnotationReplaceWithExpression
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameUnsafe
 import org.jetbrains.kotlin.resolve.getDeprecation
@@ -159,7 +157,9 @@ class KotlinQuickDocumentationProvider : AbstractDocumentationProvider() {
                 }
             }
 
-            var renderedDecl = DESCRIPTOR_RENDERER.render(declarationDescriptor)
+            var renderedDecl = DESCRIPTOR_RENDERER.withOptions {
+                withDefinedIn = !DescriptorUtils.isLocal(declarationDescriptor)
+            }.render(declarationDescriptor)
 
             if (!quickNavigation) {
                 renderedDecl = "<pre>$renderedDecl</pre>"

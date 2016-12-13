@@ -176,3 +176,5 @@ val toKotlinMutableTypesMap: Map<String, String> = mapOf(
         CommonClassNames.JAVA_UTIL_MAP_ENTRY to KotlinBuiltIns.FQ_NAMES.mutableMapEntry.asString(),
         java.util.ListIterator::class.java.canonicalName to KotlinBuiltIns.FQ_NAMES.mutableListIterator.asString()
 )
+
+inline fun <T> Boolean.isTrue(block: () -> T): T? = if (this) block() else null

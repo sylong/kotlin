@@ -86,6 +86,12 @@ public class JavaToKotlinConverterSingleFileTestGenerated extends AbstractJavaTo
             doTest(fileName);
         }
 
+        @TestMetadata("annotationsFromPropertyAccessors.java")
+        public void testAnnotationsFromPropertyAccessors() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("j2k/testData/fileOrElement/annotations/annotationsFromPropertyAccessors.java");
+            doTest(fileName);
+        }
+
         @TestMetadata("javaClassArgument.java")
         public void testJavaClassArgument() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("j2k/testData/fileOrElement/annotations/javaClassArgument.java");
@@ -113,6 +119,12 @@ public class JavaToKotlinConverterSingleFileTestGenerated extends AbstractJavaTo
         @TestMetadata("jetbrainsNullable.java")
         public void testJetbrainsNullable() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("j2k/testData/fileOrElement/annotations/jetbrainsNullable.java");
+            doTest(fileName);
+        }
+
+        @TestMetadata("modifiersToAnnotationsFromPropertyAccessors.java")
+        public void testModifiersToAnnotationsFromPropertyAccessors() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("j2k/testData/fileOrElement/annotations/modifiersToAnnotationsFromPropertyAccessors.java");
             doTest(fileName);
         }
 

@@ -320,11 +320,16 @@ class Converter private constructor(
         val getMethod = propertyInfo.getMethod
         val setMethod = propertyInfo.setMethod
 
-        //TODO: annotations from getter/setter?
-        val annotations =
-                (field?.let { convertAnnotations(it) } ?: Annotations.Empty) +
-                (getMethod?.let { (!propertyInfo.needExplicitGetter).isTrue { convertAnnotations(it, AnnotationUseTarget.Get) } } ?: Annotations.Empty) +
-                (setMethod?.let { (!propertyInfo.needExplicitSetter).isTrue { convertAnnotations(it, AnnotationUseTarget.Set) } } ?: Annotations.Empty)
+
+        var annotations = Annotations.Empty
+
+        field?.let { annotations += convertAnnotations(it) }
+
+        if (!propertyInfo.needExplicitGetter)
+            getMethod?.let { annotations += convertAnnotations(it, AnnotationUseTarget.Get) }
+
+        if (!propertyInfo.needExplicitSetter)
+            setMethod?.let { annotations += convertAnnotations(it, AnnotationUseTarget.Set) }
 
 
         val modifiers = (propertyInfo.modifiers + (field?.let { specialModifiersCase(field) } ?: Modifiers.Empty))

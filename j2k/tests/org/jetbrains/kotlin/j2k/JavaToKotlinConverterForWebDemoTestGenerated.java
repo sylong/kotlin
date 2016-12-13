@@ -56,6 +56,12 @@ public class JavaToKotlinConverterForWebDemoTestGenerated extends AbstractJavaTo
             doTest(fileName);
         }
 
+        @TestMetadata("annotationFromConstructorParamToProperty.java")
+        public void testAnnotationFromConstructorParamToProperty() throws Exception {
+            String fileName = KotlinTestUtils.navigationMetadata("j2k/testData/fileOrElement/annotations/annotationFromConstructorParamToProperty.java");
+            doTest(fileName);
+        }
+
         @TestMetadata("annotationInterface1.java")
         public void testAnnotationInterface1() throws Exception {
             String fileName = KotlinTestUtils.navigationMetadata("j2k/testData/fileOrElement/annotations/annotationInterface1.java");

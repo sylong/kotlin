@@ -24,7 +24,11 @@ enum class AnnotationUseTarget(val t: String) {
     File("file"), Get("get"), Set("set")
 }
 
-class Annotation(val name: Identifier, val arguments: List<Pair<Identifier?, DeferredElement<Expression>>>, val newLineAfter: Boolean, val target: AnnotationUseTarget? = null) : Element() {
+class Annotation(val name: Identifier,
+                 val arguments: List<Pair<Identifier?, DeferredElement<Expression>>>,
+                 val newLineAfter: Boolean,
+                 val target: AnnotationUseTarget? = null) : Element() {
+
     override fun generateCode(builder: CodeBuilder) {
         builder.append("@")
         target?.let {

@@ -21,7 +21,7 @@ import org.jetbrains.kotlin.j2k.append
 import org.jetbrains.kotlin.j2k.buildList
 
 enum class AnnotationUseTarget(val t: String) {
-    File("file"), Get("get"), Set("set")
+    File("file"), Param("param"), Get("get"), Set("set")
 }
 
 class Annotation(val name: Identifier,

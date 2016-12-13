@@ -2,5 +2,5 @@ internal annotation class A
 
 internal annotation class B
 
-class U(@A @B
+class U(@param:A @B
         var i: Int)

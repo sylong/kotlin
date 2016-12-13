@@ -66,6 +66,8 @@ private val DIAGNOSTIC_FACTORY_TO_RENDERER by lazy {
         put(ErrorsJs.EXTERNAL_TYPE_EXTENDS_NON_EXTERNAL_TYPE, "External type extends non-external type")
         put(ErrorsJs.WRONG_OPERATION_WITH_DYNAMIC, "Wrong operation with dynamic value: {0}", Renderers.STRING)
         put(ErrorsJs.OVERRIDING_EXTERNAL_FUN_WITH_OPTIONAL_PARAMS, "Overriding `external` function with optional parameters")
+        put(ErrorsJs.OVERRIDING_EXTERNAL_FUN_WITH_OPTIONAL_PARAMS_WITH_FAKE,
+            "Overriding `external` function with optional parameters by declaration from superclass: {0}", Renderers.COMPACT)
 
         this
     }

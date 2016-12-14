@@ -20,7 +20,7 @@ suspend fun Controller.suspendExtension(v: String): String = v.suspendHere()
 
 inline suspend fun Controller.inlineSuspendExtension(v: String) = v.inlineSuspendHere()
 
-// MODULE: main(controller)
+// MODULE: main(controller, support)
 // FILE: main.kt
 import lib.*
 import kotlin.coroutines.*

@@ -198,7 +198,13 @@ class AndroidGradleWrapper {
     if (libraries == null) return jarToLibraryArtifactMap
 
     for (lib in libraries) {
-      jarToLibraryArtifactMap[lib.jarFile] = lib.bundle
+      if (lib.class.name == "com.android.builder.dependency.level2.AndroidDependency") {
+        // android tools >= 2.3
+        jarToLibraryArtifactMap[lib.jarFile] = lib.artifactFile
+      } else {
+        // android tools <= 2.2
+        jarToLibraryArtifactMap[lib.jarFile] = lib.bundle
+      }
 
       // local dependencies are detected as changed by gradle, because they are seem to be
       // rewritten every time when bundle changes
@@ -219,18 +225,24 @@ class AndroidGradleWrapper {
   }
 
   @Nullable
-  private static Iterable<LibraryDependency> getVariantLibraryDependencies(BaseVariantData variantData) {
+  private static Iterable<Object> getVariantLibraryDependencies(BaseVariantData variantData) {
     def variantDependency = variantData.variantDependency
-    if (variantDependency instanceof DependencyContainer) {
+    if (variantDependency.class.name == "com.android.builder.dependency.DependencyContainer") {
       // android tools < 2.2
-      return variantDependency.getAndroidDependencies()
+      return variantDependency.getAndroidDependencies() as Iterable<LibraryDependency>
     }
 
     def variantDependencyMeta = variantData.variantDependency.getMetaClass()
     def getCompileDependencies = variantDependencyMeta.getMetaMethod("getCompileDependencies")
-    if (getCompileDependencies != null && getCompileDependencies.returnType.metaClass == DependencyContainer.metaClass) {
-      // android tools 2.2
-      return variantDependency.getCompileDependencies().getAndroidDependencies()
+
+    if (getCompileDependencies != null) {
+      if (getCompileDependencies.returnType.name == "com.android.builder.dependency.level2.DependencyContainer") {
+        // android tools >= 2.3
+        return variantDependency.getCompileDependencies().getDirectAndroidDependencies()
+      } else if (getCompileDependencies.returnType.metaClass == DependencyContainer.metaClass) {
+        // android tools 2.2
+        return variantDependency.getCompileDependencies().getAndroidDependencies()
+      }
     }
 
     return null

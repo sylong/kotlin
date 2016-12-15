@@ -44,8 +44,8 @@ class C {
 // MODULE: main(lib)
 // FILE: main.kt
 fun test() {
-    println(C.<!UNRESOLVED_REFERENCE!>propA<!>.<!DEBUG_INFO_ELEMENT_WITH_ERROR_TYPE!>x<!>())
-    println(C.<!UNRESOLVED_REFERENCE!>propI<!>.<!DEBUG_INFO_ELEMENT_WITH_ERROR_TYPE!>x<!>())
-    println(C.<!UNRESOLVED_REFERENCE!>propAI<!>.<!DEBUG_INFO_ELEMENT_WITH_ERROR_TYPE!>x<!>())
-    println(C.<!UNRESOLVED_REFERENCE!>propG<!>.<!DEBUG_INFO_ELEMENT_WITH_ERROR_TYPE!>x<!>())
+    println(C().<!INVISIBLE_MEMBER!>propA<!>.x())
+    println(C().<!INVISIBLE_MEMBER!>propI<!>.x())
+    println(C().<!INVISIBLE_MEMBER!>propAI<!>.x())
+    println(C().<!INVISIBLE_MEMBER!>propG<!>.x())
 }

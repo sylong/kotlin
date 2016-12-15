@@ -6076,6 +6076,12 @@ public class DiagnosticsTestGenerated extends AbstractDiagnosticsTest {
                 doTest(fileName);
             }
 
+            @TestMetadata("generic.kt")
+            public void testGeneric() throws Exception {
+                String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/delegationBy/generic.kt");
+                doTest(fileName);
+            }
+
             @TestMetadata("sameDelegationInHierarchy.kt")
             public void testSameDelegationInHierarchy() throws Exception {
                 String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/delegationBy/sameDelegationInHierarchy.kt");

@@ -5,6 +5,9 @@ open header class ArrayList<E> : MutableList<E> {
     constructor()
     constructor(c: Collection<E>)
 
+    fun trimToSize()
+    fun ensureCapacity(minCapacity: Int)
+
     // From List
     override val size: Int
     override fun isEmpty(): Boolean
@@ -34,8 +37,10 @@ open header class ArrayList<E> : MutableList<E> {
 }
 
 open header class HashMap<K, V> : MutableMap<K, V> {
-    constructor(initialCapacity: Int)
     constructor()
+    constructor(initialCapacity: Int)
+    constructor(initialCapacity: Int, loadFactor: Float)
+    constructor(original: Map<out K, V>)
 
     // From Map
     override val size: Int
@@ -55,14 +60,17 @@ open header class HashMap<K, V> : MutableMap<K, V> {
 }
 
 open header class LinkedHashMap<K, V> : HashMap<K, V> {
-    constructor(initialCapacity: Int)
     constructor()
-    constructor(m: Map<out K, V>)
+    constructor(initialCapacity: Int)
+    constructor(initialCapacity: Int, loadFactor: Float)
+    constructor(original: Map<out K, V>)
 }
 
 open header class HashSet<E> : MutableSet<E> {
     constructor()
     constructor(initialCapacity: Int)
+    constructor(initialCapacity: Int, loadFactor: Float)
+    constructor(c: Collection<E>)
 
     // From Set
     override val size: Int
@@ -81,8 +89,9 @@ open header class HashSet<E> : MutableSet<E> {
 }
 
 open header class LinkedHashSet<E> : HashSet<E> {
-    constructor(initialCapacity: Int)
     constructor()
+    constructor(initialCapacity: Int)
+    constructor(initialCapacity: Int, loadFactor: Float)
     constructor(c: Collection<E>)
 }
 
@@ -122,3 +131,6 @@ header inline fun <reified T> Collection<T>.toTypedArray(): Array<T>
 
 header fun <T : Comparable<T>> MutableList<T>.sort(): Unit
 header fun <T> MutableList<T>.sortWith(comparator: Comparator<in T>): Unit
+
+// from Maps.kt
+header operator fun <K, V> MutableMap<K, V>.set(key: K, value: V): Unit

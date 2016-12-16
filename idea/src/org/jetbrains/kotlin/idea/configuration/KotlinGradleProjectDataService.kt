@@ -23,6 +23,7 @@ import com.intellij.openapi.externalSystem.service.project.IdeModifiableModelsPr
 import com.intellij.openapi.externalSystem.service.project.manage.AbstractProjectDataService
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.project.Project
+import org.jetbrains.kotlin.config.TargetPlatformKind
 import org.jetbrains.kotlin.config.CoroutineSupport
 import org.jetbrains.kotlin.extensions.ProjectExtensionDescriptor
 import org.jetbrains.kotlin.idea.facet.KotlinFacet
@@ -32,6 +33,7 @@ import org.jetbrains.kotlin.idea.inspections.gradle.findAll
 import org.jetbrains.kotlin.idea.inspections.gradle.findKotlinPluginVersion
 import org.jetbrains.plugins.gradle.model.data.BuildScriptClasspathData
 import org.jetbrains.plugins.gradle.model.data.GradleSourceSetData
+import org.jetbrains.plugins.gradle.service.project.data.ExternalProjectDataService
 import java.util.*
 
 interface GradleProjectImportHandler {
@@ -59,11 +61,21 @@ class KotlinGradleProjectDataService : AbstractProjectDataService<GradleSourceSe
             val moduleNode = ExternalSystemApiUtil.findParent(sourceSetNode, ProjectKeys.MODULE)
             val compilerVersion = moduleNode?.findAll(BuildScriptClasspathData.KEY)?.firstOrNull()?.data?.let(::findKotlinPluginVersion)
                                   ?: continue
+            val projectNode = ExternalSystemApiUtil.findParent(moduleNode, ProjectKeys.PROJECT)
+            val externalProjectNode = ExternalSystemApiUtil.find(projectNode as DataNode<*>, ExternalProjectDataService.KEY)
+            val platformKind = externalProjectNode?.let {
+                when (it.data.plugins.values.map { it.id }.firstOrNull { it.startsWith("kotlin-platform-") }) {
+                    "kotlin-platform-jvm" -> TargetPlatformKind.Jvm.JVM_1_6
+                    "kotlin-platform-js" -> TargetPlatformKind.JavaScript
+                    "kotlin-platform-common" -> TargetPlatformKind.Default
+                    else -> null
+                }
+            }
 
             val coroutinesProperty = findKotlinCoroutinesProperty(project)
 
             val kotlinFacet = ideModule.getOrCreateFacet(modelsProvider)
-            kotlinFacet.configureFacet(compilerVersion, coroutinesProperty, modelsProvider)
+            kotlinFacet.configureFacet(compilerVersion, coroutinesProperty, platformKind, modelsProvider)
             GradleProjectImportHandler.getInstances(project).forEach { it(kotlinFacet, sourceSetNode) }
         }
     }

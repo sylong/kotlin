@@ -153,10 +153,15 @@ fun Module.getOrCreateFacet(modelsProvider: IdeModifiableModelsProvider): Kotlin
     return facet
 }
 
-fun KotlinFacet.configureFacet(compilerVersion: String, coroutineSupport: CoroutineSupport, modelsProvider: IdeModifiableModelsProvider) {
+fun KotlinFacet.configureFacet(
+        compilerVersion: String,
+        coroutineSupport: CoroutineSupport,
+        platformKind: TargetPlatformKind<*>?,
+        modelsProvider: IdeModifiableModelsProvider
+) {
     val module = module
     with(configuration.settings) {
-        versionInfo.targetPlatformKind = null
+        versionInfo.targetPlatformKind = platformKind
         versionInfo.apiLevel = null
         initializeIfNeeded(module, modelsProvider.getModifiableRootModel(module))
         with(versionInfo) {

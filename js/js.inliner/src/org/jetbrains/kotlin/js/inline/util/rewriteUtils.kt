@@ -26,7 +26,7 @@ import org.jetbrains.kotlin.js.inline.util.rewriters.ThisReplacingVisitor
 
 import java.util.IdentityHashMap
 
-fun <T : JsNode> replaceNames(node: T, replaceMap: IdentityHashMap<JsName, JsExpression>): T {
+fun <T : JsNode> replaceNames(node: T, replaceMap: Map<JsName, JsExpression>): T {
     return NameReplacingVisitor(replaceMap).accept(node)!!
 }
 

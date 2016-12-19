@@ -15447,6 +15447,12 @@ public class DiagnosticsTestGenerated extends AbstractDiagnosticsTest {
                     doTest(fileName);
                 }
 
+                @TestMetadata("unsupportedInferenceFromGetters.kt")
+                public void testUnsupportedInferenceFromGetters() throws Exception {
+                    String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/properties/inferenceFromGetters/unsupportedInferenceFromGetters.kt");
+                    doTest(fileName);
+                }
+
                 @TestMetadata("vars.kt")
                 public void testVars() throws Exception {
                     String fileName = KotlinTestUtils.navigationMetadata("compiler/testData/diagnostics/tests/properties/inferenceFromGetters/vars.kt");

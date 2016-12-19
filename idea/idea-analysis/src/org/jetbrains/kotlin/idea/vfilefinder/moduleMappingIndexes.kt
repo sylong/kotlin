@@ -43,11 +43,13 @@ object KotlinModuleMappingIndex : FileBasedIndexExtension<String, PackageParts>(
         override fun read(input: DataInput): PackageParts? =
                 PackageParts(IOUtil.readUTF(input)).apply {
                     parts.addAll(IOUtil.readStringList(input))
+                    metadataParts.addAll(IOUtil.readStringList(input))
                 }
 
         override fun save(out: DataOutput, value: PackageParts?) {
             IOUtil.writeUTF(out, value!!.packageFqName)
             IOUtil.writeStringList(out, value.parts)
+            IOUtil.writeStringList(out, value.metadataParts)
         }
     }
 

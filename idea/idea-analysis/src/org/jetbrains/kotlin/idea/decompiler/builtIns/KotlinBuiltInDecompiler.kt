@@ -34,6 +34,7 @@ import org.jetbrains.kotlin.idea.decompiler.textBuilder.defaultDecompilerRendere
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.renderer.DescriptorRenderer
 import org.jetbrains.kotlin.serialization.builtins.BuiltInsProtoBuf
+import org.jetbrains.kotlin.serialization.deserialization.MetadataPackageFragment
 import org.jetbrains.kotlin.serialization.deserialization.NameResolverImpl
 import java.io.ByteArrayInputStream
 
@@ -91,12 +92,14 @@ fun buildDecompiledTextForBuiltIns(builtInFile: VirtualFile): DecompiledText {
 sealed class BuiltInDefinitionFile {
     class Incompatible(val version: BuiltInsBinaryVersion) : BuiltInDefinitionFile()
 
-    class Compatible(val proto: BuiltInsProtoBuf.BuiltIns, val packageDirectory: VirtualFile) : BuiltInDefinitionFile() {
+    class Compatible(val proto: BuiltInsProtoBuf.BuiltIns,
+                     val packageDirectory: VirtualFile,
+                     val isMetadata: Boolean) : BuiltInDefinitionFile() {
         val nameResolver = NameResolverImpl(proto.strings, proto.qualifiedNames)
         val packageFqName = nameResolver.getPackageFqName(proto.`package`.getExtension(BuiltInsProtoBuf.packageFqName))
 
         val classesToDecompile =
-                if (FILTER_OUT_CLASSES_EXISTING_AS_JVM_CLASS_FILES) proto.class_List.filter { classProto ->
+                if (!isMetadata && FILTER_OUT_CLASSES_EXISTING_AS_JVM_CLASS_FILES) proto.class_List.filter { classProto ->
                     shouldDecompileBuiltInClass(nameResolver.getClassId(classProto.fqName))
                 }
                 else proto.class_List
@@ -126,7 +129,7 @@ sealed class BuiltInDefinitionFile {
             }
 
             val proto = BuiltInsProtoBuf.BuiltIns.parseFrom(stream, BuiltInSerializerProtocol.extensionRegistry)
-            val result = BuiltInDefinitionFile.Compatible(proto, file.parent)
+            val result = BuiltInDefinitionFile.Compatible(proto, file.parent, file.extension == MetadataPackageFragment.METADATA_FILE_EXTENSION)
             if (result.classesToDecompile.isEmpty() &&
                 result.proto.`package`.functionCount == 0 &&
                 result.proto.`package`.propertyCount == 0) {

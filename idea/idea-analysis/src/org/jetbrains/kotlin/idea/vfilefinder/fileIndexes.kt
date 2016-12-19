@@ -28,6 +28,7 @@ import org.jetbrains.kotlin.idea.decompiler.js.JsMetaFileUtils
 import org.jetbrains.kotlin.idea.decompiler.js.KotlinJavaScriptMetaFileType
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.serialization.deserialization.MetadataPackageFragment
 import java.io.DataInput
 import java.io.DataOutput
 import java.util.*
@@ -115,7 +116,7 @@ open class KotlinMetadataFileIndexBase<T>(classOfIndex: Class<T>, indexFunction:
     private val VERSION = 1
 
     private val INDEXER = indexer { fileContent ->
-        if (fileContent.fileType == KotlinBuiltInFileType && fileContent.fileName.endsWith(".kotlin_metadata")) {
+        if (fileContent.fileType == KotlinBuiltInFileType && fileContent.fileName.endsWith(MetadataPackageFragment.DOT_METADATA_FILE_EXTENSION)) {
             val builtins = BuiltInDefinitionFile.read(fileContent.content, fileContent.file.parent)
             (builtins as? BuiltInDefinitionFile.Compatible)?.let { builtinDefFile ->
                 val proto = builtinDefFile.proto

@@ -78,15 +78,24 @@ class AnnotationConverter(private val converter: Converter) {
         val deferredExpression = converter.deferredElement<Expression> {
             LiteralExpression("\"" + StringUtil.escapeStringCharacters(deprecatedTag.content()) + "\"").assignNoPrototype()
         }
-        return Annotation(Identifier("Deprecated").assignPrototype(deprecatedTag.nameElement),
-                          listOf(null to deferredExpression), newLineAfter = true, target = target)
+        val identifier = Identifier("Deprecated").assignPrototype(deprecatedTag.nameElement)
+        return Annotation(identifier,
+                          listOf(null to deferredExpression),
+                          true,
+                          effectiveAnnotationUseTarget(identifier.name, target))
                 .assignPrototype(deprecatedTag)
     }
 
     private fun convertModifiersToAnnotations(owner: PsiModifierListOwner, target: AnnotationUseTarget?): Annotations {
         val list = MODIFIER_TO_ANNOTATION
                 .filter { owner.hasModifierProperty(it.first) }
-                .map { Annotation(Identifier.withNoPrototype(it.second), listOf(), newLineAfter = false, target = target).assignNoPrototype() }
+                .map {
+                    Annotation(Identifier.withNoPrototype(it.second),
+                               listOf(),
+                               newLineAfter = false,
+                               target = effectiveAnnotationUseTarget(it.second, target)
+                    ).assignNoPrototype()
+                }
         return Annotations(list).assignNoPrototype()
     }
 
@@ -101,9 +110,15 @@ class AnnotationConverter(private val converter: Converter) {
         return expr.referenceName?.let { JavaAnnotationTargetMapper.mapJavaTargetArgumentByName(it) } ?: emptySet()
     }
 
+    private fun effectiveAnnotationUseTarget(name: String, target: AnnotationUseTarget?): AnnotationUseTarget? =
+            when (name) {
+                "Deprecated" -> if (target == AnnotationUseTarget.Param) null else target
+                else -> target
+            }
+
     fun convertAnnotation(annotation: PsiAnnotation, newLineAfter: Boolean, target: AnnotationUseTarget? = null): Annotation? {
         val (name, arguments) = convertAnnotationValue(annotation) ?: return null
-        return Annotation(name, arguments, newLineAfter, target).assignPrototype(annotation)
+        return Annotation(name, arguments, newLineAfter, effectiveAnnotationUseTarget(name.name, target)).assignPrototype(annotation)
     }
 
     private fun convertAnnotationValue(annotation: PsiAnnotation): Pair<Identifier, List<Pair<Identifier?, DeferredElement<Expression>>>>? {

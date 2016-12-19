@@ -114,7 +114,11 @@ sealed class BuiltInDefinitionFile {
             @TestOnly set
 
         fun read(file: VirtualFile): BuiltInDefinitionFile? {
-            val stream = ByteArrayInputStream(file.contentsToByteArray())
+            return read(file.contentsToByteArray(), file)
+        }
+
+        fun read(contents: ByteArray, file: VirtualFile): BuiltInDefinitionFile? {
+            val stream = ByteArrayInputStream(contents)
 
             val version = BuiltInsBinaryVersion.readFrom(stream)
             if (!version.isCompatible()) {

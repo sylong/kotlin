@@ -28,6 +28,7 @@ import org.jetbrains.kotlin.idea.decompiler.js.JsMetaFileUtils
 import org.jetbrains.kotlin.idea.decompiler.js.KotlinJavaScriptMetaFileType
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.serialization.deserialization.MetadataPackageFragment
 import java.io.DataInput
 import java.io.DataOutput
@@ -122,7 +123,8 @@ open class KotlinMetadataFileIndexBase<T>(classOfIndex: Class<T>, indexFunction:
                 val proto = builtinDefFile.proto
                 proto.class_List.singleOrNull()?.let { cls ->
                     indexFunction(builtinDefFile.nameResolver.getClassId(cls.fqName))
-                }
+                } ?: indexFunction(ClassId(builtinDefFile.packageFqName,
+                                           Name.identifier(fileContent.fileName.substringBeforeLast(MetadataPackageFragment.DOT_METADATA_FILE_EXTENSION))))
             }
         } else null
     }

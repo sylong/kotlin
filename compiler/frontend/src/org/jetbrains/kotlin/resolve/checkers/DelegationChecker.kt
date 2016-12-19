@@ -30,6 +30,7 @@ import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.DescriptorUtils
 import org.jetbrains.kotlin.resolve.MemberComparator
 import org.jetbrains.kotlin.resolve.OverridingUtil
+import org.jetbrains.kotlin.resolve.descriptorUtil.mapDelegatesToDelegatedMethods
 import org.jetbrains.kotlin.utils.DFS
 import org.jetbrains.kotlin.utils.keysToMapExceptNulls
 
@@ -51,7 +52,7 @@ class DelegationChecker : SimpleDeclarationChecker {
                 val superType = specifier.typeReference?.let { bindingContext.get(BindingContext.TYPE, it) } ?: continue
                 val superTypeDescriptor = superType.constructor.declarationDescriptor as? ClassDescriptor ?: continue
 
-                val delegates = getDelegates(delegationDescriptors, superTypeDescriptor)
+                val delegates = mapDelegatesToDelegatedMethods(delegationDescriptors, superTypeDescriptor)
                 delegates.forEach { (delegated, delegatedTo) ->
                     checkDescriptor(declaration, delegated, delegatedTo, diagnosticHolder)
                 }

@@ -25,11 +25,10 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.DescriptorUtils
 import org.jetbrains.kotlin.resolve.MemberComparator
-import org.jetbrains.kotlin.resolve.OverridingUtil
 import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
+import org.jetbrains.kotlin.resolve.descriptorUtil.mapDelegatesToDelegatedMethods
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.isDynamic
-import org.jetbrains.kotlin.utils.keysToMapExceptNulls
 
 object CodegenUtil {
     // class Foo : Bar by baz
@@ -45,28 +44,14 @@ object CodegenUtil {
     ): Map<CallableMemberDescriptor, CallableDescriptor> {
         if (delegateExpressionType?.isDynamic() ?: false) return emptyMap()
 
-        return descriptor.defaultType.memberScope.getContributedDescriptors().asSequence()
-                .filterIsInstance<CallableMemberDescriptor>()
-                .filter { it.kind == CallableMemberDescriptor.Kind.DELEGATION }
-                .asIterable()
-                .sortedWith(MemberComparator.INSTANCE)
-                .keysToMapExceptNulls { delegatingMember ->
-                    val actualDelegates = DescriptorUtils.getAllOverriddenDescriptors(delegatingMember)
-                            .filter { it.containingDeclaration == toInterface }
-                            .map { overriddenDescriptor ->
-                                val scope = (delegateExpressionType ?: toInterface.defaultType).memberScope
-                                val name = overriddenDescriptor.name
-
-                                // this is the actual member of delegateExpressionType that we are delegating to
-                                (scope.getContributedFunctions(name, NoLookupLocation.FROM_BACKEND) +
-                                 scope.getContributedVariables(name, NoLookupLocation.FROM_BACKEND))
-                                        .firstOrNull { it == overriddenDescriptor || OverridingUtil.overrides(it, overriddenDescriptor) }
-                             }
-
-                    assert(actualDelegates.size <= 1) { "Many delegates found for $delegatingMember: $actualDelegates" }
-
-                    actualDelegates.firstOrNull()
-                }
+        return mapDelegatesToDelegatedMethods(descriptor.defaultType.memberScope.getContributedDescriptors().asSequence()
+                                                       .filterIsInstance<CallableMemberDescriptor>()
+                                                       .filter { it.kind == CallableMemberDescriptor.Kind.DELEGATION }
+                                                       .asIterable().sortedWith(MemberComparator.INSTANCE),
+                                              toInterface,
+                                              delegateExpressionType,
+                                              true
+        )
     }
 
     @JvmStatic

@@ -23,21 +23,21 @@ import org.jetbrains.kotlin.descriptors.annotations.Annotated
 import org.jetbrains.kotlin.descriptors.annotations.KotlinRetention
 import org.jetbrains.kotlin.descriptors.impl.TypeAliasConstructorDescriptor
 import org.jetbrains.kotlin.incremental.components.LookupLocation
+import org.jetbrains.kotlin.incremental.components.NoLookupLocation
 import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.FqNameUnsafe
 import org.jetbrains.kotlin.resolve.DescriptorUtils
+import org.jetbrains.kotlin.resolve.OverridingUtil
 import org.jetbrains.kotlin.resolve.constants.EnumValue
-import org.jetbrains.kotlin.types.KotlinType
-import org.jetbrains.kotlin.types.TypeProjection
-import org.jetbrains.kotlin.types.TypeSubstitutor
-import org.jetbrains.kotlin.types.Variance
+import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.checker.KotlinTypeChecker
 import org.jetbrains.kotlin.types.typeUtil.isAnyOrNullableAny
 import org.jetbrains.kotlin.types.typeUtil.makeNullable
 import org.jetbrains.kotlin.utils.DFS
 import org.jetbrains.kotlin.utils.SmartList
 import org.jetbrains.kotlin.utils.addToStdlib.check
+import org.jetbrains.kotlin.utils.keysToMapExceptNulls
 
 fun ClassDescriptor.getClassObjectReferenceTarget(): ClassDescriptor = companionObjectDescriptor ?: this
 
@@ -350,4 +350,39 @@ fun ClassifierDescriptor.getAllSuperClassifiers(): Sequence<ClassifierDescriptor
         }
 
     return doGetAllSuperClassesAndInterfaces()
+}
+
+// class Foo : Bar by baz
+//   descriptor = Foo
+//   toInterface = Bar
+//   delegateExpressionType = typeof(baz)
+// return Map<member of Foo, corresponding member of typeOf(baz)>
+fun mapDelegatesToDelegatedMethods(
+        delegatedMethods: Iterable<CallableMemberDescriptor>,
+        toInterface: ClassDescriptor,
+        delegateExpressionType: KotlinType? = null,
+        checkNumberOfDelegates: Boolean = false
+): Map<CallableMemberDescriptor, CallableMemberDescriptor> {
+    if (delegateExpressionType?.isDynamic() ?: false) return emptyMap()
+
+    return delegatedMethods
+            .keysToMapExceptNulls { delegatingMember ->
+                val actualDelegates = DescriptorUtils.getAllOverriddenDescriptors(delegatingMember)
+                        .filter { it.containingDeclaration == toInterface }
+                        .map { overriddenDescriptor ->
+                            val scope = (delegateExpressionType ?: toInterface.defaultType).memberScope
+                            val name = overriddenDescriptor.name
+
+                            // this is the actual member of delegateExpressionType that we are delegating to
+                            (scope.getContributedFunctions(name, NoLookupLocation.FROM_BACKEND) +
+                             scope.getContributedVariables(name, NoLookupLocation.FROM_BACKEND))
+                                    .firstOrNull { it == overriddenDescriptor || OverridingUtil.overrides(it, overriddenDescriptor) }
+                        }
+
+                if (checkNumberOfDelegates) {
+                    assert(actualDelegates.size <= 1) { "Many delegates found for $delegatingMember: $actualDelegates" }
+                }
+
+                actualDelegates.firstOrNull()
+            }
 }

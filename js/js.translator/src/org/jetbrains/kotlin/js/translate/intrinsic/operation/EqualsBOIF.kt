@@ -34,6 +34,7 @@ import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.resolve.DescriptorUtils
 import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
 import org.jetbrains.kotlin.types.KotlinType
+import org.jetbrains.kotlin.types.TypeUtils
 import org.jetbrains.kotlin.types.expressions.OperatorConventions
 import org.jetbrains.kotlin.types.isDynamic
 import java.util.*
@@ -93,7 +94,7 @@ object EqualsBOIF : BinaryOperationIntrinsicFactory {
 
     private fun isEnumIntrinsicApplicable(descriptor: FunctionDescriptor, leftType: KotlinType?, rightType: KotlinType?): Boolean {
         return DescriptorUtils.isEnumClass(descriptor.containingDeclaration) &&
-               (leftType?.isMarkedNullable == false || rightType?.isMarkedNullable == false)
+               (leftType?.let { TypeUtils.isNullableType(it) } == false || rightType?.let { TypeUtils.isNullableType(it) } == false)
     }
 
     private fun KtBinaryExpression.isNegated() = getOperationToken(this) == KtTokens.EXCLEQ

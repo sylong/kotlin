@@ -297,3 +297,10 @@ fun KtExpression?.asmType(typeMapper: KotlinTypeMapper, bindingContext: BindingC
 
 fun KtExpression?.kotlinType(bindingContext: BindingContext) = this?.let(bindingContext::getType)
 
+fun Collection<Type>.withVariableIndices(): List<Pair<Int, Type>> = mutableListOf<Pair<Int, Type>>().apply {
+    var index = 0
+    for (type in this@withVariableIndices) {
+        add(index to type)
+        index += type.size
+    }
+}

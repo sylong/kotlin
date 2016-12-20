@@ -75,7 +75,10 @@ private val DIAGNOSTIC_FACTORY_TO_RENDERER by lazy {
         put(ErrorsJs.INLINE_EXTERNAL_DECLARATION, "Inline external declaration")
         put(ErrorsJs.NON_ABSTRACT_MEMBER_OF_EXTERNAL_INTERFACE,
             "Only nullable properties of external interfaces are allowed to be non-abstract")
+
         put(ErrorsJs.WRONG_BODY_OF_EXTERNAL_DECLARATION, "Wrong body of external declaration. Must be either ' = noImpl' or { noImpl }")
+        put(ErrorsJs.EXTERNAL_DELEGATED_CONSTRUCTOR_CALL, "Delegated constructor call in external class")
+        put(ErrorsJs.EXTERNAL_DELEGATION, "Using delegate on external declaration")
 
         this
     }

@@ -80,7 +80,11 @@ public interface ErrorsJs {
             ERROR, PositioningStrategies.DECLARATION_SIGNATURE_OR_DEFAULT);
     DiagnosticFactory0<KtExpression> NON_ABSTRACT_MEMBER_OF_EXTERNAL_INTERFACE = DiagnosticFactory0.create(
             ERROR, PositioningStrategies.DECLARATION_SIGNATURE_OR_DEFAULT);
+
+    // Diagnostics about exposing implementation detail in external declarations
     DiagnosticFactory0<KtExpression> WRONG_BODY_OF_EXTERNAL_DECLARATION = DiagnosticFactory0.create(ERROR);
+    DiagnosticFactory0<KtElement> EXTERNAL_DELEGATED_CONSTRUCTOR_CALL = DiagnosticFactory0.create(ERROR);
+    DiagnosticFactory0<KtElement> EXTERNAL_DELEGATION = DiagnosticFactory0.create(ERROR);
 
     @SuppressWarnings("UnusedDeclaration")
     Object _initializer = new Object() {

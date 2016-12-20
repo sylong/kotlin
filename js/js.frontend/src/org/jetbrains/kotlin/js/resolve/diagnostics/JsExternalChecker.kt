@@ -91,6 +91,7 @@ object JsExternalChecker : SimpleDeclarationChecker {
         }
 
         checkBody(declaration, diagnosticHolder, bindingContext)
+        checkDelegation(declaration, descriptor, diagnosticHolder)
     }
 
     private fun checkBody(declaration: KtDeclaration, diagnosticHolder: DiagnosticSink, bindingContext: BindingContext) {
@@ -103,6 +104,34 @@ object JsExternalChecker : SimpleDeclarationChecker {
         if (declaration is KtCallableDeclaration) {
             for (defaultValue in declaration.valueParameters.mapNotNull { it.defaultValue }) {
                 checkExternalExpression(defaultValue, diagnosticHolder, bindingContext)
+            }
+        }
+    }
+
+    private fun checkDelegation(declaration: KtDeclaration, descriptor: DeclarationDescriptor, diagnosticHolder: DiagnosticSink) {
+        if (descriptor !is MemberDescriptor || !DescriptorUtils.isEffectivelyExternal(descriptor)) return
+
+        if (declaration is KtClassOrObject) {
+            for (superTypeEntry in declaration.superTypeListEntries) {
+                when (superTypeEntry) {
+                    is KtSuperTypeCallEntry -> {
+                        diagnosticHolder.report(ErrorsJs.EXTERNAL_DELEGATED_CONSTRUCTOR_CALL.on(superTypeEntry.valueArgumentList!!))
+                    }
+                    is KtDelegatedSuperTypeEntry -> {
+                        diagnosticHolder.report(ErrorsJs.EXTERNAL_DELEGATION.on(superTypeEntry))
+                    }
+                }
+            }
+        }
+        else if (declaration is KtSecondaryConstructor) {
+            val delegationCall = declaration.getDelegationCall()
+            if (!delegationCall.isImplicit) {
+                diagnosticHolder.report(ErrorsJs.EXTERNAL_DELEGATED_CONSTRUCTOR_CALL.on(delegationCall))
+            }
+        }
+        else if (declaration is KtProperty && descriptor !is PropertyAccessorDescriptor) {
+            declaration.delegate?.let { delegate ->
+                diagnosticHolder.report(ErrorsJs.EXTERNAL_DELEGATION.on(delegate))
             }
         }
     }

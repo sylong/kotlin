@@ -20,7 +20,7 @@ import org.w3c.performance.*
 import org.w3c.workers.*
 import org.w3c.xhr.*
 
-public external open class UIEvent(type: String, eventInitDict: UIEventInit = noImpl /* noImpl */) : Event(type, eventInitDict) {
+public external open class UIEvent(type: String, eventInitDict: UIEventInit = noImpl /* noImpl */) : Event {
     open val view: Window?
     open val detail: Int
 }
@@ -47,7 +47,7 @@ public inline fun UIEventInit(view: Window? = noImpl /* null */, detail: Int? = 
     return o
 }
 
-public external open class FocusEvent(type: String, eventInitDict: FocusEventInit = noImpl /* noImpl */) : UIEvent(type, eventInitDict) {
+public external open class FocusEvent(type: String, eventInitDict: FocusEventInit = noImpl /* noImpl */) : UIEvent {
     open val relatedTarget: EventTarget?
 }
 
@@ -71,7 +71,7 @@ public inline fun FocusEventInit(relatedTarget: EventTarget? = noImpl /* null */
     return o
 }
 
-public external open class MouseEvent(type: String, eventInitDict: MouseEventInit = noImpl /* noImpl */) : UIEvent(type, eventInitDict), UnionElementOrMouseEvent {
+public external open class MouseEvent(type: String, eventInitDict: MouseEventInit = noImpl /* noImpl */) : UIEvent, UnionElementOrMouseEvent {
     open val region: String?
     open val screenX: Int
     open val screenY: Int
@@ -221,7 +221,7 @@ public inline fun EventModifierInit(ctrlKey: Boolean? = noImpl /* false */, shif
     return o
 }
 
-public external open class WheelEvent(type: String, eventInitDict: WheelEventInit = noImpl /* noImpl */) : MouseEvent(type, eventInitDict) {
+public external open class WheelEvent(type: String, eventInitDict: WheelEventInit = noImpl /* noImpl */) : MouseEvent {
     open val deltaX: Double
     open val deltaY: Double
     open val deltaZ: Double
@@ -287,7 +287,7 @@ public inline fun WheelEventInit(deltaX: Double? = noImpl /* 0.0 */, deltaY: Dou
     return o
 }
 
-public external open class InputEvent(type: String, eventInitDict: InputEventInit = noImpl /* noImpl */) : UIEvent(type, eventInitDict) {
+public external open class InputEvent(type: String, eventInitDict: InputEventInit = noImpl /* noImpl */) : UIEvent {
     open val data: String
     open val isComposing: Boolean
 }
@@ -316,7 +316,7 @@ public inline fun InputEventInit(data: String? = noImpl /* "" */, isComposing: B
     return o
 }
 
-public external open class KeyboardEvent(type: String, eventInitDict: KeyboardEventInit = noImpl /* noImpl */) : UIEvent(type, eventInitDict) {
+public external open class KeyboardEvent(type: String, eventInitDict: KeyboardEventInit = noImpl /* noImpl */) : UIEvent {
     open val key: String
     open val code: String
     open val location: Int
@@ -389,7 +389,7 @@ public inline fun KeyboardEventInit(key: String? = noImpl /* "" */, code: String
     return o
 }
 
-public external open class CompositionEvent(type: String, eventInitDict: CompositionEventInit = noImpl /* noImpl */) : UIEvent(type, eventInitDict) {
+public external open class CompositionEvent(type: String, eventInitDict: CompositionEventInit = noImpl /* noImpl */) : UIEvent {
     open val data: String
 }
 
